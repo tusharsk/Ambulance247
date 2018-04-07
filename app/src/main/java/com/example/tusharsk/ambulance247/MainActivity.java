@@ -3,9 +3,11 @@ package com.example.tusharsk.ambulance247;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -29,6 +31,11 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
@@ -45,10 +52,8 @@ public class MainActivity extends AppCompatActivity
 
         //fragment = new MapFragment();
         //FragmentManager fm=
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
+        CheckUserPermsions();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -128,16 +133,67 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        Toast.makeText(this, "Map is Ready", Toast.LENGTH_SHORT).show();
         mMap = googleMap;
-        CheckUserPermsions();
+
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
+        getDeviceLocation();
 
+        /*LatLng sydney = new LatLng(latitude,longitude);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));*/
+
+
+    }
+
+
+    private void getDeviceLocation(){
+     //   Log.d(TAG, "getDeviceLocation: getting the devices current location");
+
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
+        try{
+
+
+                final Task location = mFusedLocationProviderClient.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()){
+                           // Log.d(TAG, "onComplete: found location!");
+                            Location currentLocation = (Location) task.getResult();
+                            LatLng sydney = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+                            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));
+                            //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
+
+                        }else{
+                            //Log.d(TAG, "onComplete: current location is null");
+                           // Toast.makeText(this,"unable to get current location",Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+
+        }catch (SecurityException e){
+           // Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+        }
+    }
+
+    private void moveCamera(LatLng latLng, float zoom){
+       // Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
     void CheckUserPermsions() {
@@ -176,32 +232,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    boolean isGPSEnabled = false;
+
+    // flag for network status
+    boolean isNetworkEnabled = false;
+
+    // flag for GPS status
+    boolean canGetLocation = false;
+
+    Location location; // location
+    double latitude; // latitude
+    double longitude; // longitude
+
+    // The minimum distance to change Updates in meters
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
+
+    // The minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES = 1000 * 1; // 1 minute
+
+
     void getLastLocation() {
-        Toast.makeText(this,"placing1",Toast.LENGTH_SHORT).show();
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Toast.makeText(this,"placing2",Toast.LENGTH_SHORT).show();
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (location == null)
-            {
-                location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-                Toast.makeText(this,"placing3",Toast.LENGTH_SHORT).show();
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
-            }
-            //Toast.makeText(this, "1: "+String.valueOf(location.getLongitude())+String.valueOf(location.getLatitude()),Toast.LENGTH_SHORT).show();
-            LatLng sydney = new LatLng(location.getLongitude(),location.getLatitude());
-            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));
-        }
 
 
 
