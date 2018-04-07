@@ -133,7 +133,6 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     private FusedLocationProviderClient mFusedLocationProviderClient;
 
     @Override
@@ -147,7 +146,13 @@ public class MainActivity extends AppCompatActivity
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
         getDeviceLocation();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        //mMap.getUiSettings().isMapToolbarEnabled(false);
         /*LatLng sydney = new LatLng(latitude,longitude);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
@@ -173,7 +178,7 @@ public class MainActivity extends AppCompatActivity
                            // Log.d(TAG, "onComplete: found location!");
                             Location currentLocation = (Location) task.getResult();
                             LatLng sydney = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                            //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
                             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
                             mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));
                             //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
