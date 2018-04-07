@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         mMap.setMyLocationEnabled(true);
-        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+        //mMap.getUiSettings().setMyLocationButtonEnabled(false);
         init();
 
 
