@@ -19,7 +19,7 @@ public class SaveSettings {
         ShredRef=context.getSharedPreferences("myRef",Context.MODE_PRIVATE);
     }
 
-    void SaveData(String UserID,String profilepath,String user_gender,String user_name){
+    void SaveData(String UserID,String user_name){
 
         SharedPreferences.Editor editor=ShredRef.edit();
         editor.putString("UserID",UserID);

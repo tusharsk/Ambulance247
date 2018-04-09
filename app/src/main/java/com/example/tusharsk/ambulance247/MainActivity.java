@@ -398,12 +398,6 @@ public class MainActivity extends AppCompatActivity
 
             try {
                 JSONObject json= new JSONObject(progress[0]);
-                //display response data
-                //if (json.getString("server response")==null)
-                  //  return;
-               // if (json.getString("msg").equalsIgnoreCase("Pass")) {
-                 //   Toast.makeText(getApplicationContext(), json.getString("msg"), Toast.LENGTH_LONG).show();
-                    //login
 
                     JSONArray AmbulanceInfo=new JSONArray( json.getString("server response"));
                     int i;
@@ -413,37 +407,11 @@ public class MainActivity extends AppCompatActivity
                         double Ambulance_latitude=UserCreintal.getDouble("latitude");
                         double Ambulance_longitude=UserCreintal.getDouble("longitude");
                         LatLng sydney = new LatLng(Ambulance_latitude,Ambulance_longitude);
-                        MarkerOptions options=new MarkerOptions().position(sydney).title("CAB"+i+1);
+                        MarkerOptions options=new MarkerOptions().position(sydney).title("CAB"+i+1).icon(BitmapDescriptorFactory.fromResource(R.mipmap.cab));
                         mMap.addMarker(options);
                     }
 
                     //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)
-                    /// adding data inside shared prefrences
-                   // SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                   // saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("picture_path"),UserCreintal.getString("gender"),UserCreintal.getString("user_name"));
-                    //Intent i= new Intent(Login.this,NavigationBar.class);
-                    //startActivity(i);
-                    //finish();
-                    //String url="https://tusharsk26.000webhostapp.com/TwikBust/login.php?email="+etEmail.getText().toString()+"&password="+etPassword.getText().toString() ;
-
-                    // new MyAsyncTaskgetNews().execute(url);
-
-
-              //  }
-
-                if (json.getString("msg").equalsIgnoreCase("Cannot Pass ")) {
-
-
-
-                    Toast.makeText(getApplicationContext(),"WRONG EMAIL OR PASSWORD",Toast.LENGTH_SHORT).show();
-                    /*JSONArray UserInfo=new JSONArray( json.getString("info"));
-                    JSONObject UserCreintal= UserInfo.getJSONObject(0);
-                    //Toast.makeText(getApplicationContext(),UserCreintal.getString("user_id"),Toast.LENGTH_LONG).show();
-                    hideProgressDialog();
-                    SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                    saveSettings.SaveData(UserCreintal.getString("user_id"));
-                    finish(); //close this activity*/
-                }
 
             } catch (Exception ex) {
                 //Log.d("er",  ex.getMessage());

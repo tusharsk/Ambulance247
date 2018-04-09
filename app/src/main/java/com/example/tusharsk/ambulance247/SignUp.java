@@ -1,6 +1,5 @@
 package com.example.tusharsk.ambulance247;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -17,45 +16,35 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Login_Activity extends AppCompatActivity {
+public class SignUp extends AppCompatActivity {
 
-    EditText etEmail;
-    EditText etPassword;
-    String email;
-    String password;
-
+    EditText etemail,etname,etpassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_);
-        etEmail=(EditText)findViewById(R.id.et_email);
-        etPassword=(EditText)findViewById(R.id.et_password);
+        setContentView(R.layout.activity_sign_up);
+
+        etemail=(EditText)findViewById(R.id.etemail);
+        etname=(EditText)findViewById(R.id.etname);
+        etpassword=(EditText)findViewById(R.id.etpassword);
+
     }
 
+    public void SignUp(View view) {
+        String e,p,n;
+        e=etemail.getText().toString();
+        p=etpassword.getText().toString();
+        n=etname.getText().toString();
 
-    public void login(View view) {
-
-        email=etEmail.getText().toString();
-        password=etPassword.getText().toString();
-        if(!email.matches("")&&!password.matches(""))
-        {
-            String url="="+email+"&password="+password;
+        if(!e.matches("")&&(!p.matches(""))&&(!n.matches(""))){
+            String url="";
             new MyAsyncTaskgetNews().execute(url);
         }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"PLEASE ENTER THE DETAILS",Toast.LENGTH_SHORT).show();
-        }
-
     }
 
 
-    public void register(View view) {
-        Intent i= new Intent(Login_Activity.this,SignUp.class);
-        startActivity(i);
 
-    }
 
     public class MyAsyncTaskgetNews extends AsyncTask<String, String, String> {
         @Override
@@ -97,26 +86,18 @@ public class Login_Activity extends AppCompatActivity {
                 //display response data
                 if (json.getString("msg")==null)
                     return;
-                if (json.getString("msg").equalsIgnoreCase("Pass Login")) {
-                    Toast.makeText(getApplicationContext(), json.getString("msg"), Toast.LENGTH_LONG).show();
+                if (json.getString("msg").equalsIgnoreCase("Yes")) {
+                    Toast.makeText(getApplicationContext(), json.getString("Account Created!"), Toast.LENGTH_LONG).show();
                     //login
 
-                    JSONArray UserInfo=new JSONArray( json.getString("info"));
-                    JSONObject UserCreintal= UserInfo.getJSONObject(0);
-
-                    SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                    saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("user_name"));
-                    Intent i= new Intent(Login_Activity.this,MainActivity.class);
+                    Intent i= new Intent(SignUp.this,Login_Activity.class);
                     startActivity(i);
                     finish();
 
                 }
 
-                if (json.getString("msg").equalsIgnoreCase("cannot login")) {
-
-
-
-                    Toast.makeText(getApplicationContext(),"WRONG EMAIL OR PASSWORD",Toast.LENGTH_SHORT).show();
+                if (json.getString("msg").equalsIgnoreCase("No")) {
+                    Toast.makeText(getApplicationContext(),"Email Already Registered!",Toast.LENGTH_SHORT).show();
                 }
 
             } catch (Exception ex) {
@@ -132,7 +113,5 @@ public class Login_Activity extends AppCompatActivity {
         }
 
     }
-
-
-
 }
+

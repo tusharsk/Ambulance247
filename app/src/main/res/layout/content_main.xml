@@ -13,8 +13,8 @@
     <com.sothree.slidinguppanel.SlidingUpPanelLayout
         xmlns:sothree="http://schemas.android.com/apk/res-auto"
         android:id="@+id/sliding_layout"
-        android:layout_width="368dp"
-        android:layout_height="495dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="bottom"
         sothree:umanoPanelHeight="55dp"
         sothree:umanoShadowHeight="4dp"
