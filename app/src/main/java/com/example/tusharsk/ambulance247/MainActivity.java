@@ -18,6 +18,8 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,7 +31,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,31 +49,45 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,driver_list_Adapter.driver_list_AdapterOnClickHandler {
 
     private GoogleMap mMap;
     Fragment fragment;
     private EditText mSearchText;
-
+    SlidingUpPanelLayout slidingUpPanelLayout;
     double latitude=0; // latitude
     double longitude=0; // longitude
-
+    Button t;
     Marker marker;
-
+    String driver_name[];
+    String driver_position[];
+    String cab_no[];
+    String driver_phone_number[];
+    String special[];
+    int rating[];
+    double time[];
+    RecyclerView recyclerView;
+    driver_list_Adapter driver_list_adapter;
+    RatingBar ratingBar;
     SaveSettings saveSettings;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,10 +103,25 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        recyclerView=(RecyclerView)findViewById(R.id.recycler2);
+
 
         //fragment = new MapFragment();
         //FragmentManager fm=
         mSearchText = (EditText) findViewById(R.id.input_search);
+        slidingUpPanelLayout=(SlidingUpPanelLayout)findViewById(R.id.sliding_layout);
+
+        slidingUpPanelLayout.setDragView(findViewById(R.id.button2));
+        ratingBar=(RatingBar)findViewById(R.id.rating_3);
+
+
+        t=(Button) findViewById(R.id.button2);
+
+
+
+
+
+
         CheckUserPermsions();
 
         String url="https://anubhavaron000001.000webhostapp.com/cab_dummy_info.php";
@@ -100,6 +133,20 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+        t.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Background_cab_list background_cab_list=new Background_cab_list();
+                background_cab_list.execute();
+                LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setHasFixedSize(true);
+                driver_list_adapter=new driver_list_Adapter(MainActivity.this);
+                recyclerView.setAdapter(driver_list_adapter);
+
+                t.setText("SLIDE ME");
             }
         });
 
@@ -352,10 +399,108 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onClick(int x) {
+        Toast.makeText(getApplicationContext(),cab_no[x],Toast.LENGTH_LONG).show();
+    }
+
+    class Background_cab_list extends AsyncTask<Void,Void,String>
+    {   String json_url="https://anubhavaron000001.000webhostapp.com/cab_dummy_info.php";
+
+        @Override
+        protected void onPreExecute() {
+            //   Toast.makeText(login_signup.this,"Hey",Toast.LENGTH_SHORT).show();
+            super.onPreExecute();
+        }
+        @Override
+        protected void onPostExecute(String JSON_STRING) {
+
+            JSONObject jsonObject;
+            JSONArray jsonArray;
+            try {
+                jsonObject=new JSONObject(JSON_STRING);
+                int count=0;
+                jsonArray=jsonObject.getJSONArray("server response");
+                int size=jsonArray.length();
+                cab_no=new String[size];
+                special=new String[size];
+                driver_name=new String[size];
+                driver_phone_number=new String[size];
+                driver_position=new String[size];
+                rating=new int[size];
+                time=new double[size];
+                double latitude_a=0;
+                double longitude_a=0;
+
+
+                String cab_no_a;
+                String special_a;
+                String driver_name_a;
+                String driver_phone_a;
+                String driver_position_a;
+                int rating_a;
+                float time_a;
+                while(count<jsonArray.length())
+                {
+                    JSONObject JO=jsonArray.getJSONObject(count);
+                    cab_no[count]=JO.getString("cab_no");
+                    driver_position[count]=JO.getString("cab_position");
+                    latitude_a=JO.getDouble("latitude");
+                    longitude_a=JO.getDouble("longitude");
+                    driver_name[count]=JO.getString("driver_name");
+                    rating[count]=JO.getInt("rating");
+                    driver_phone_number[count]=JO.getString("driver_number");
+                    special[count]=JO.getString("specialisation");
+
+
+
+                    count++;
+                }
+                driver_list_adapter.swapCursor(getApplicationContext(),driver_name,driver_position,cab_no,driver_phone_number,special,rating);
+                Toast.makeText(getApplicationContext(),"Choose driver to book a cab",Toast.LENGTH_LONG).show();
 
 
 
 
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            super.onPostExecute(JSON_STRING);
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+        String json_string;
+            try {
+                URL url=new URL(json_url);
+                HttpURLConnection httpURLConnection=(HttpURLConnection)url.openConnection();
+                InputStream inputStream=httpURLConnection.getInputStream();
+                BufferedReader bufferedReader=new BufferedReader(new InputStreamReader(inputStream));
+                StringBuilder stringBuilder=new StringBuilder();
+                while((json_string=bufferedReader.readLine())!=null)
+                {
+                    stringBuilder.append(json_string+"\n");
+
+                }
+                bufferedReader.close();
+                inputStream.close();
+                httpURLConnection.disconnect();
+                return stringBuilder.toString().trim();
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
 
 
 
