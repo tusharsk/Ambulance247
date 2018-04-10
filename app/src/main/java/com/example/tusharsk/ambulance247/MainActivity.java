@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -394,8 +395,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onClick(int x) {
-        Toast.makeText(getApplicationContext(),cab_no[x],Toast.LENGTH_LONG).show();
+    public void onClick(final int x) {
+
+        AlertDialog.Builder mBuilder=new AlertDialog.Builder(MainActivity.this);
+        View mView=getLayoutInflater().inflate(R.layout.dialog_history,null);
+        final EditText destination=(EditText)mView.findViewById(R.id.destination_5);
+        Button add=(Button)mView.findViewById(R.id.add_5);
+        add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+               background_adding_history background_task_add_batches=new background_adding_history(MainActivity.this);
+                background_task_add_batches.execute("ANU",cab_no[x],destination.getText().toString());
+            }
+        });
+        mBuilder.setView(mView);
+        AlertDialog dialog=mBuilder.create();
+        dialog.show();
     }
 
     class Background_cab_list extends AsyncTask<Void,Void,String>
