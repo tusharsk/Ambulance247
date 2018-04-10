@@ -105,7 +105,7 @@ public class Login_Activity extends AppCompatActivity {
                     JSONObject UserCreintal= UserInfo.getJSONObject(0);
 
                     SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                    saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("user_name"));
+                    saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("user_name"),UserCreintal.getString("flag"));
                     Intent i= new Intent(Login_Activity.this,MainActivity.class);
                     startActivity(i);
                     finish();

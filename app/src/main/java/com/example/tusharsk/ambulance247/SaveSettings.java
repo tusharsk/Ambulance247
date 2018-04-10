@@ -12,6 +12,7 @@ import android.content.SharedPreferences;
 public class SaveSettings {
     public  static String UserID="";
     public  static String user_name="";
+    public  static String flag="";
     Context context;
     SharedPreferences ShredRef;
     public  SaveSettings(Context context){
@@ -19,11 +20,12 @@ public class SaveSettings {
         ShredRef=context.getSharedPreferences("myRef",Context.MODE_PRIVATE);
     }
 
-    void SaveData(String UserID,String user_name){
+    void SaveData(String UserID,String user_name,String flag){
 
         SharedPreferences.Editor editor=ShredRef.edit();
         editor.putString("UserID",UserID);
         editor.putString("user_name",user_name);
+        editor.putString("flag",flag);
         editor.commit();
         LoadData();
     }
@@ -31,6 +33,7 @@ public class SaveSettings {
     void LoadData(){
         UserID= ShredRef.getString("UserID","0");
         user_name=ShredRef.getString("user_name",null);
+        flag=ShredRef.getString("flag","0");
         if (UserID.equals("0")){
 
             Intent intent=new Intent(context, Login_Activity.class);
@@ -48,7 +51,14 @@ public class SaveSettings {
             return UserID;
     }
 
-
+    String Username()
+    {
+        return  user_name;
+    }
+    String Userflag()
+    {
+        return flag;
+    }
     void DeleteData()
     {
         SharedPreferences.Editor editor=ShredRef.edit();
