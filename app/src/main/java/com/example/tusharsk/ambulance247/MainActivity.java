@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity
             finish();
         }*/
 
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -232,6 +233,11 @@ public class MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            saveSettings.DeleteData();
+            Intent intent=new Intent(getApplicationContext(),Login_Activity.class);
+
+            startActivity(intent);
+            finish();
             return true;
         }
 
@@ -245,6 +251,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
+            Intent intent=new Intent(getApplicationContext(),PersonalInfo_fill.class);
+            startActivity(intent);
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 

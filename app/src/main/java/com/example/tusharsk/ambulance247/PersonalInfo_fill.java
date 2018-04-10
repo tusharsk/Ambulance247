@@ -1,15 +1,14 @@
 package com.example.tusharsk.ambulance247;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -17,45 +16,53 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class Login_Activity extends AppCompatActivity {
+public class PersonalInfo_fill extends AppCompatActivity {
 
-    EditText etEmail;
-    EditText etPassword;
-    String email;
-    String password;
 
+    SaveSettings saveSettings;
+    TextView tvname;
+    EditText dob,bg,mobile,age,emergency,gender;
+    String dobs,bgs,mobiles,ages,emergencys,genders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login_);
-        etEmail=(EditText)findViewById(R.id.et_email);
-        etPassword=(EditText)findViewById(R.id.et_password);
+
+
+
+        saveSettings=new SaveSettings(getApplicationContext());
+        String username=saveSettings.Username();
+        String flag=saveSettings.Userflag();
+        if(!flag.matches(""))
+        {
+            Intent intent=new Intent(getApplicationContext(),PersonalInfo_show.class);
+            startActivity(intent);
+            finish();
+        }
+
+        setContentView(R.layout.activity_personal_info_fill);
+        tvname.setText(username);
+        dob=(EditText) findViewById(R.id.etdob);
+        bg=(EditText) findViewById(R.id.etbloodgroup);
+        mobile=(EditText) findViewById(R.id.etmobile);
+        age=(EditText) findViewById(R.id.etage);
+        emergency=(EditText) findViewById(R.id.etemergency);
+        gender=(EditText) findViewById(R.id.etgender);
     }
 
-
-    public void login(View view) {
-
-        email=etEmail.getText().toString();
-        password=etPassword.getText().toString();
-        if(!email.matches("")&&!password.matches(""))
-        {
-            String url="="+email+"&password="+password;
+    public void Save(View view) {
+        dobs=dob.getText().toString();
+        bgs=bg.getText().toString();
+        mobiles=mobile.getText().toString();
+        ages=age.getText().toString();
+        emergencys=emergency.getText().toString();
+        genders=gender.getText().toString();
+        if(!dobs.matches("")&&!bgs.matches("")&&!mobiles.matches("")&&!ages.matches("")&&!emergencys.matches("")&&genders.matches("")){
+            String url="";
             new MyAsyncTaskgetNews().execute(url);
         }
-        else
-        {
-            Toast.makeText(getApplicationContext(),"PLEASE ENTER THE DETAILS",Toast.LENGTH_SHORT).show();
-        }
-
     }
 
-
-    public void register(View view) {
-        Intent i= new Intent(Login_Activity.this,SignUp.class);
-        startActivity(i);
-
-    }
 
     public class MyAsyncTaskgetNews extends AsyncTask<String, String, String> {
         @Override
@@ -97,26 +104,13 @@ public class Login_Activity extends AppCompatActivity {
                 //display response data
                 if (json.getString("msg")==null)
                     return;
-                if (json.getString("msg").equalsIgnoreCase("Pass Login")) {
-                    Toast.makeText(getApplicationContext(), json.getString("msg"), Toast.LENGTH_LONG).show();
+                if (json.getString("msg").equalsIgnoreCase("Yes")) {
+                    Toast.makeText(getApplicationContext(), json.getString("Details Filled!"), Toast.LENGTH_LONG).show();
                     //login
-
-                    JSONArray UserInfo=new JSONArray( json.getString("info"));
-                    JSONObject UserCreintal= UserInfo.getJSONObject(0);
-
-                    SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                    saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("user_name"),UserCreintal.getString("flag"));
-                    Intent i= new Intent(Login_Activity.this,MainActivity.class);
-                    startActivity(i);
-                    finish();
-
                 }
 
-                if (json.getString("msg").equalsIgnoreCase("cannot login")) {
-
-
-
-                    Toast.makeText(getApplicationContext(),"WRONG EMAIL OR PASSWORD",Toast.LENGTH_SHORT).show();
+                if (json.getString("msg").equalsIgnoreCase("No")) {
+                    Toast.makeText(getApplicationContext(),"Email Already Registered!",Toast.LENGTH_SHORT).show();
                 }
 
             } catch (Exception ex) {
@@ -132,7 +126,4 @@ public class Login_Activity extends AppCompatActivity {
         }
 
     }
-
-
-
 }
