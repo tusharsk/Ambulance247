@@ -30,7 +30,7 @@ public class PersonalInfo_fill extends AppCompatActivity {
 
 
 
-        saveSettings=new SaveSettings(getApplicationContext());
+       /* saveSettings=new SaveSettings(getApplicationContext());
         String username=saveSettings.Username();
         String flag=saveSettings.Userflag();
         if(!flag.matches(""))
@@ -38,10 +38,10 @@ public class PersonalInfo_fill extends AppCompatActivity {
             Intent intent=new Intent(getApplicationContext(),PersonalInfo_show.class);
             startActivity(intent);
             finish();
-        }
+        }*/
 
         setContentView(R.layout.activity_personal_info_fill);
-        tvname.setText(username);
+        //tvname.setText(username);
         dob=(EditText) findViewById(R.id.etdob);
         bg=(EditText) findViewById(R.id.etbloodgroup);
         mobile=(EditText) findViewById(R.id.etmobile);
