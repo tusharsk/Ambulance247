@@ -39,13 +39,13 @@ public class SaveSettings {
         }
 
     }
-    boolean UserPresent()
+    String UserPresent()
     {
         UserID= ShredRef.getString("UserID","0");
         if(UserID.equals("0"))
-            return false;
+            return "0";
         else
-            return true;
+            return UserID;
     }
 
 

@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 Background_cab_list background_cab_list=new Background_cab_list();
                 background_cab_list.execute();
+
                 LinearLayoutManager layoutManager=new LinearLayoutManager(getApplicationContext());
                 recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setHasFixedSize(true);
@@ -422,13 +423,7 @@ public class MainActivity extends AppCompatActivity
                 int count=0;
                 jsonArray=jsonObject.getJSONArray("server response");
                 int size=jsonArray.length();
-                cab_no=new String[size];
-                special=new String[size];
-                driver_name=new String[size];
-                driver_phone_number=new String[size];
-                driver_position=new String[size];
-                rating=new int[size];
-                time=new double[size];
+
                 double latitude_a=0;
                 double longitude_a=0;
 
@@ -440,24 +435,57 @@ public class MainActivity extends AppCompatActivity
                 String driver_position_a;
                 int rating_a;
                 float time_a;
+                double disttance_check=15;
+                int c=0;
+
                 while(count<jsonArray.length())
                 {
                     JSONObject JO=jsonArray.getJSONObject(count);
-                    cab_no[count]=JO.getString("cab_no");
-                    driver_position[count]=JO.getString("cab_position");
+
                     latitude_a=JO.getDouble("latitude");
                     longitude_a=JO.getDouble("longitude");
-                    driver_name[count]=JO.getString("driver_name");
-                    rating[count]=JO.getInt("rating");
-                    driver_phone_number[count]=JO.getString("driver_number");
-                    special[count]=JO.getString("specialisation");
+                    if(distance(latitude,longitude,latitude_a,longitude_a)<=disttance_check)
+                    {
+                        c++;
+                    }
 
 
 
                     count++;
                 }
-                driver_list_adapter.swapCursor(getApplicationContext(),driver_name,driver_position,cab_no,driver_phone_number,special,rating);
-                Toast.makeText(getApplicationContext(),"Choose driver to book a cab",Toast.LENGTH_LONG).show();
+
+                count=0;
+                cab_no=new String[c];
+                special=new String[c];
+                driver_name=new String[c];
+                driver_phone_number=new String[c];
+                driver_position=new String[c];
+                rating=new int[c];
+                time=new double[c];
+                c=0;
+                while(count<jsonArray.length())
+                {
+                    JSONObject JO=jsonArray.getJSONObject(count);
+
+                    latitude_a=JO.getDouble("latitude");
+                    longitude_a=JO.getDouble("longitude");
+                    double dist=distance(latitude,longitude,latitude_a,longitude_a);
+                    if(dist<=disttance_check)
+                    {   cab_no[c]=JO.getString("cab_no");
+                        driver_position[c]=JO.getString("cab_position");
+                        driver_name[c]=JO.getString("driver_name");
+                        rating[c]=JO.getInt("rating");
+                        driver_phone_number[c]=JO.getString("driver_number");
+                        special[c]=JO.getString("specialisation");
+                        time[c]=2.5*dist;
+
+                        c++;
+                    }
+
+                    count++;
+                }
+                driver_list_adapter.swapCursor(getApplicationContext(),driver_name,driver_position,cab_no,driver_phone_number,special,rating,time);
+
 
 
 
@@ -500,6 +528,28 @@ public class MainActivity extends AppCompatActivity
             }
             return null;
         }
+    }
+
+
+    double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1))
+                * Math.sin(deg2rad(lat2))
+                + Math.cos(deg2rad(lat1))
+                * Math.cos(deg2rad(lat2))
+                * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        return (dist);
+    }
+
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
     }
 
 

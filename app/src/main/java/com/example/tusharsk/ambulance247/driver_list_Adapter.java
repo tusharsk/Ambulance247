@@ -62,6 +62,7 @@ public class driver_list_Adapter extends RecyclerView.Adapter<driver_list_Adapte
         holder.rate.setFocusableInTouchMode(false);
         holder.rate.setClickable(false);
         holder.rate.setIsIndicator(true);
+        holder.timing.setText(String.format(" %.2f", time[position])+" minutes away");
 
 
 
@@ -115,7 +116,7 @@ public class driver_list_Adapter extends RecyclerView.Adapter<driver_list_Adapte
 
         }
     }
-    public void swapCursor(Context context,String driver_name_a[],String driver_position_a[], String cab_no_a[],String driver_phone_number_a[],String special_a[],int rating_a[]) {
+    public void swapCursor(Context context,String driver_name_a[],String driver_position_a[], String cab_no_a[],String driver_phone_number_a[],String special_a[],int rating_a[],double time_a[]) {
         // Always close the previous mCursor first
 
         if (driver_name_a != null) {
@@ -126,6 +127,7 @@ public class driver_list_Adapter extends RecyclerView.Adapter<driver_list_Adapte
             driver_phone_number=driver_phone_number_a;
             special=special_a;
             rating=rating_a;
+            time=time_a;
             this.context=context;
             this.notifyDataSetChanged();
         }
