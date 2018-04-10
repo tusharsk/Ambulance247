@@ -128,14 +128,7 @@ public class MainActivity extends AppCompatActivity
         String url="https://anubhavaron000001.000webhostapp.com/cab_dummy_info.php";
         new MyAsyncTaskgetNews().execute(url);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+
         t.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
