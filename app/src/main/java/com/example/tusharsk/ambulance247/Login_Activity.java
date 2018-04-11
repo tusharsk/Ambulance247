@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class Login_Activity extends AppCompatActivity {
     EditText etPassword;
     String email;
     String password;
-
+    Button bt,btsign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,8 @@ public class Login_Activity extends AppCompatActivity {
         setContentView(R.layout.activity_login_);
         etEmail=(EditText)findViewById(R.id.et_email);
         etPassword=(EditText)findViewById(R.id.et_password);
+        bt=(Button) findViewById(R.id.login);
+        btsign=(Button) findViewById(R.id.signup);
     }
 
 
@@ -40,7 +43,9 @@ public class Login_Activity extends AppCompatActivity {
         password=etPassword.getText().toString();
         if(!email.matches("")&&!password.matches(""))
         {
-            String url="="+email+"&password="+password;
+            String url="https://anubhavaron000001.000webhostapp.com/login.php?name="+email+"&password="+password;
+            bt.setEnabled(false);
+            btsign.setEnabled(false);
             new MyAsyncTaskgetNews().execute(url);
         }
         else
@@ -48,12 +53,14 @@ public class Login_Activity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"PLEASE ENTER THE DETAILS",Toast.LENGTH_SHORT).show();
         }
 
+
     }
 
 
     public void register(View view) {
         Intent i= new Intent(Login_Activity.this,SignUp.class);
         startActivity(i);
+
 
     }
 
@@ -105,7 +112,7 @@ public class Login_Activity extends AppCompatActivity {
                     JSONObject UserCreintal= UserInfo.getJSONObject(0);
 
                     SaveSettings saveSettings= new SaveSettings(getApplicationContext());
-                    saveSettings.SaveData(UserCreintal.getString("user_id"),UserCreintal.getString("user_name"),UserCreintal.getString("flag"));
+                    saveSettings.SaveData(UserCreintal.getString("name"),UserCreintal.getString("email"),UserCreintal.getString("flag"));
                     Intent i= new Intent(Login_Activity.this,MainActivity.class);
                     startActivity(i);
                     finish();
@@ -113,9 +120,6 @@ public class Login_Activity extends AppCompatActivity {
                 }
 
                 if (json.getString("msg").equalsIgnoreCase("cannot login")) {
-
-
-
                     Toast.makeText(getApplicationContext(),"WRONG EMAIL OR PASSWORD",Toast.LENGTH_SHORT).show();
                 }
 

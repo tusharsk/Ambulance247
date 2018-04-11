@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,6 +20,7 @@ import java.net.URL;
 public class SignUp extends AppCompatActivity {
 
     EditText etemail,etname,etpassword;
+    Button bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class SignUp extends AppCompatActivity {
         etemail=(EditText)findViewById(R.id.etemail);
         etname=(EditText)findViewById(R.id.etname);
         etpassword=(EditText)findViewById(R.id.etpassword);
+        bt=(Button) findViewById(R.id.btsignup);
 
     }
 
@@ -38,7 +41,8 @@ public class SignUp extends AppCompatActivity {
         n=etname.getText().toString();
 
         if(!e.matches("")&&(!p.matches(""))&&(!n.matches(""))){
-            String url="";
+            String url="https://anubhavaron000001.000webhostapp.com/signup.php?name="+e+"&email="+n+"&password="+p;
+           // bt.setEnabled(false);
             new MyAsyncTaskgetNews().execute(url);
         }
     }
@@ -84,12 +88,9 @@ public class SignUp extends AppCompatActivity {
             try {
                 JSONObject json= new JSONObject(progress[0]);
                 //display response data
-                if (json.getString("msg")==null)
-                    return;
                 if (json.getString("msg").equalsIgnoreCase("Yes")) {
-                    Toast.makeText(getApplicationContext(), json.getString("Account Created!"), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Account Created!", Toast.LENGTH_LONG).show();
                     //login
-
                     Intent i= new Intent(SignUp.this,Login_Activity.class);
                     startActivity(i);
                     finish();

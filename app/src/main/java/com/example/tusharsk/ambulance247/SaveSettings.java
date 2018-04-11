@@ -33,7 +33,7 @@ public class SaveSettings {
     void LoadData(){
         UserID= ShredRef.getString("UserID","0");
         user_name=ShredRef.getString("user_name",null);
-        flag=ShredRef.getString("flag","0");
+        flag=ShredRef.getString("flag",null);
         if (UserID.equals("0")){
 
             Intent intent=new Intent(context, Login_Activity.class);

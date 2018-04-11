@@ -94,13 +94,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-     /*   saveSettings= new SaveSettings(getApplicationContext());
+        saveSettings= new SaveSettings(getApplicationContext());
         saveSettings.LoadData();
-        if(!saveSettings.UserPresent())
+        if(saveSettings.UserPresent().matches("0"))
         {
             finish();
         }
-        */
+
 
 
         setContentView(R.layout.activity_main);
@@ -262,6 +262,10 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
+            saveSettings.DeleteData();
+            Intent intent=new Intent(getApplicationContext(),Login_Activity.class);
+            startActivity(intent);
+            finish();
 
         }
 
@@ -295,43 +299,43 @@ public class MainActivity extends AppCompatActivity
 
 
     private void getDeviceLocation(){
-     //   Log.d(TAG, "getDeviceLocation: getting the devices current location");
+        //   Log.d(TAG, "getDeviceLocation: getting the devices current location");
 
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         try{
 
 
-                final Task location = mFusedLocationProviderClient.getLastLocation();
-                location.addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()){
-                           // Log.d(TAG, "onComplete: found location!");
-                            Location currentLocation = (Location) task.getResult();
-                            LatLng sydney = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
-                            //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-                            latitude=currentLocation.getLatitude();
-                            longitude=currentLocation.getLongitude();
-                            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-                            mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));
-                            //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
+            final Task location = mFusedLocationProviderClient.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if(task.isSuccessful()){
+                        // Log.d(TAG, "onComplete: found location!");
+                        Location currentLocation = (Location) task.getResult();
+                        LatLng sydney = new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude());
+                        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+                        latitude=currentLocation.getLatitude();
+                        longitude=currentLocation.getLongitude();
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(15.0f ));
+                        //moveCamera(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()),DEFAULT_ZOOM);
 
-                        }else{
-                            //Log.d(TAG, "onComplete: current location is null");
-                           // Toast.makeText(this,"unable to get current location",Toast.LENGTH_SHORT).show();
+                    }else{
+                        //Log.d(TAG, "onComplete: current location is null");
+                        // Toast.makeText(this,"unable to get current location",Toast.LENGTH_SHORT).show();
 
-                        }
                     }
-                });
+                }
+            });
 
         }catch (SecurityException e){
-           // Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
+            // Log.e(TAG, "getDeviceLocation: SecurityException: " + e.getMessage() );
         }
     }
 
     private void moveCamera(LatLng latLng, float zoom){
-       // Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
+        // Log.d(TAG, "moveCamera: moving the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude );
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
     }
 
@@ -412,7 +416,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
 
-               background_adding_history background_task_add_batches=new background_adding_history(MainActivity.this);
+                background_adding_history background_task_add_batches=new background_adding_history(MainActivity.this);
                 background_task_add_batches.execute("ANU",cab_no[x],destination.getText().toString());
             }
         });
@@ -521,7 +525,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected String doInBackground(Void... voids) {
-        String json_string;
+            String json_string;
             try {
                 URL url=new URL(json_url);
                 HttpURLConnection httpURLConnection=(HttpURLConnection)url.openConnection();
@@ -611,19 +615,19 @@ public class MainActivity extends AppCompatActivity
             try {
                 JSONObject json= new JSONObject(progress[0]);
 
-                    JSONArray AmbulanceInfo=new JSONArray( json.getString("server response"));
-                    int i;
-                    for(i=0;i<AmbulanceInfo.length();i=i+1) {
+                JSONArray AmbulanceInfo=new JSONArray( json.getString("server response"));
+                int i;
+                for(i=0;i<AmbulanceInfo.length();i=i+1) {
 
-                        JSONObject UserCreintal = AmbulanceInfo.getJSONObject(i);
-                        double Ambulance_latitude=UserCreintal.getDouble("latitude");
-                        double Ambulance_longitude=UserCreintal.getDouble("longitude");
-                        LatLng sydney = new LatLng(Ambulance_latitude,Ambulance_longitude);
-                        MarkerOptions options=new MarkerOptions().position(sydney).title("CAB"+i+1).icon(BitmapDescriptorFactory.fromResource(R.mipmap.cab));
-                        mMap.addMarker(options);
-                    }
+                    JSONObject UserCreintal = AmbulanceInfo.getJSONObject(i);
+                    double Ambulance_latitude=UserCreintal.getDouble("latitude");
+                    double Ambulance_longitude=UserCreintal.getDouble("longitude");
+                    LatLng sydney = new LatLng(Ambulance_latitude,Ambulance_longitude);
+                    MarkerOptions options=new MarkerOptions().position(sydney).title("CAB"+i+1).icon(BitmapDescriptorFactory.fromResource(R.mipmap.cab));
+                    mMap.addMarker(options);
+                }
 
-                    //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)
+                //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher)
 
             } catch (Exception ex) {
                 //Log.d("er",  ex.getMessage());
