@@ -76,9 +76,6 @@ public class driver_list_Adapter extends RecyclerView.Adapter<driver_list_Adapte
             return 0;
         else
             return cab_no.length;
-
-
-
     }
 
 
