@@ -411,13 +411,15 @@ public class MainActivity extends AppCompatActivity
         AlertDialog.Builder mBuilder=new AlertDialog.Builder(MainActivity.this);
         View mView=getLayoutInflater().inflate(R.layout.dialog_history,null);
         final EditText destination=(EditText)mView.findViewById(R.id.destination_5);
-        Button add=(Button)mView.findViewById(R.id.add_5);
+        final Button add=(Button)mView.findViewById(R.id.add_5);
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                add.setEnabled(false);
 
                 background_adding_history background_task_add_batches=new background_adding_history(MainActivity.this);
-                background_task_add_batches.execute("ANU",cab_no[x],destination.getText().toString());
+
+                background_task_add_batches.execute(SaveSettings.UserID,cab_no[x],destination.getText().toString());
             }
         });
         mBuilder.setView(mView);

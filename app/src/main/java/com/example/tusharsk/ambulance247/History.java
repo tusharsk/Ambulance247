@@ -21,7 +21,8 @@ import java.net.URL;
 
 public class History extends AppCompatActivity {
     String cab_no[];
-    String userid="ANU";
+
+    String userid=SaveSettings.UserID;
     String destination[];
     RecyclerView recyclerView;
     history_adapter history_adapter;
