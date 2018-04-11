@@ -30,8 +30,8 @@ public class PersonalInfo_show extends AppCompatActivity {
         tvage=(TextView) findViewById(R.id.tvage);
         tvemergency=(TextView) findViewById(R.id.tvemergency);
         tvgender=(TextView) findViewById(R.id.tvgender);
-
-        String url="";
+        Toast.makeText(this," id "+SaveSettings.UserID,Toast.LENGTH_SHORT).show();
+        String url="https://anubhavaron000001.000webhostapp.com/show.php?name="+SaveSettings.UserID;
         new MyAsyncTaskgetNews().execute(url);
     }
 
@@ -74,18 +74,23 @@ public class PersonalInfo_show extends AppCompatActivity {
             try {
                 JSONObject json= new JSONObject(progress[0]);
                 //display response data
-                if (json.getString("msg")==null)
-                    return;
+
+
                 if (json.getString("msg").equalsIgnoreCase("Yes")) {
-                    JSONArray jsonArray=json.getJSONArray("info");
+
+
+                    JSONArray jsonArray=new JSONArray(json.getString("info"));
                     JSONObject jsonObject=jsonArray.getJSONObject(0);
-                    tvname.setText(jsonObject.getString("name"));
-                    tvdob.setText(jsonObject.getString("dob"));
-                    tvbg.setText(jsonObject.getString("bloodgroup"));
-                    tvmobile.setText(jsonObject.getString("mobile"));
-                    tvage.setText(jsonObject.getString("age"));
-                    tvemergency.setText(jsonObject.getString("emergency"));
-                    tvgender.setText(jsonObject.getString("gender"));
+
+                    //Toast.makeText(getApplicationContext(),"t"+jsonObject.getString("name"),Toast.LENGTH_SHORT).show();
+                    tvname.setText("Name:   "+jsonObject.getString("email"));
+                    tvdob.setText( "DOB:    "+jsonObject.getString("dob"));
+                    tvbg.setText(  "Blood Group: "+ jsonObject.getString("bloodgroup"));
+                    tvmobile.setText("Mobile:    "+jsonObject.getString("mobile"));
+                    tvage.setText( "Age:     "+jsonObject.getString("age"));
+                    tvemergency.setText("Emergency:   "+jsonObject.getString("emergency"));
+                    tvgender.setText("Gender:     "+jsonObject.getString("gender"));
+                    Toast.makeText(getApplicationContext(),"Details!!",Toast.LENGTH_SHORT).show();
                     //login
                 }
 

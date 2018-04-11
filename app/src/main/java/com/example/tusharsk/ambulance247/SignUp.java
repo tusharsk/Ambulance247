@@ -42,7 +42,7 @@ public class SignUp extends AppCompatActivity {
 
         if(!e.matches("")&&(!p.matches(""))&&(!n.matches(""))){
             String url="https://anubhavaron000001.000webhostapp.com/signup.php?name="+e+"&email="+n+"&password="+p;
-           // bt.setEnabled(false);
+            bt.setEnabled(false);
             new MyAsyncTaskgetNews().execute(url);
         }
     }
