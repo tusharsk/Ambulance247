@@ -94,12 +94,13 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        /*saveSettings= new SaveSettings(getApplicationContext());
+     /*   saveSettings= new SaveSettings(getApplicationContext());
         saveSettings.LoadData();
         if(!saveSettings.UserPresent())
         {
             finish();
-        }*/
+        }
+        */
 
 
         setContentView(R.layout.activity_main);
@@ -142,7 +143,7 @@ public class MainActivity extends AppCompatActivity
                 driver_list_adapter=new driver_list_Adapter(MainActivity.this);
                 recyclerView.setAdapter(driver_list_adapter);
 
-                t.setText("SLIDE ME");
+                t.setText("SLIDE ME (Click to Refresh)");
             }
         });
 
@@ -261,12 +262,6 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
 
         }
 
@@ -506,6 +501,7 @@ public class MainActivity extends AppCompatActivity
                     count++;
                 }
                 driver_list_adapter.swapCursor(getApplicationContext(),driver_name,driver_position,cab_no,driver_phone_number,special,rating,time);
+                Toast.makeText(MainActivity.this,"CHOOSE DRIVER",Toast.LENGTH_LONG).show();
 
 
 
